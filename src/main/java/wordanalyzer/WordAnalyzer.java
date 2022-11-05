@@ -66,7 +66,7 @@ public class WordAnalyzer {
      * @author 李电楠
      */
     private void addWordToResult(Word origWord, String value) throws Exception {
-        Word newWord = origWord.getClass().newInstance();
+        Word newWord = new Word(origWord.getMy_type());
         newWord.setValue(value);
         result.add(newWord);
     }

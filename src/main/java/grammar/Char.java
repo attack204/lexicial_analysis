@@ -32,7 +32,9 @@ public abstract class Char {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        return getClass().isInstance(o);
+        //return getClass().isInstance(o);
+        Char newo = (Char) o;
+        return getMy_type() == newo.getMy_type();
     }
 
     /**
@@ -44,6 +46,10 @@ public abstract class Char {
      */
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        //return getClass().hashCode();
+        //return getMy_type().ordinal();
+//        return getMy_type().hashCode();
+       // return getClass().hashCode() * 10 + getMy_type().hashCode();
+        return getMy_type().hashCode();
     }
 }
