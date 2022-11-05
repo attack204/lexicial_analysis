@@ -1,7 +1,5 @@
 package wordanalyzer;
 
-import wordanalyzer.words.WD;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

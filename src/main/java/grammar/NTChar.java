@@ -2,7 +2,7 @@ package grammar;
 
 import lombok.Getter;
 import lombok.ToString;
-import wordanalyzer.words.WD;
+import wordanalyzer.WD;
 
 import java.util.ArrayList;
 

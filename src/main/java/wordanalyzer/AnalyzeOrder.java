@@ -1,7 +1,6 @@
 package wordanalyzer;
 
 import lombok.Getter;
-import wordanalyzer.words.*;
 
 import java.util.ArrayList;
 

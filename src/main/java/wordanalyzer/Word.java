@@ -3,7 +3,6 @@ package wordanalyzer;
 import grammar.Char;
 import lombok.Getter;
 import lombok.ToString;
-import wordanalyzer.words.WD;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;

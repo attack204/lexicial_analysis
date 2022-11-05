@@ -1,7 +1,7 @@
 package grammar;
 
 import lombok.Getter;
-import wordanalyzer.words.WD;
+import wordanalyzer.WD;
 
 //文法符号
 public abstract class Char {

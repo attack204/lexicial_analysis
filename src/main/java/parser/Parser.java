@@ -5,7 +5,7 @@ import grammar.NTChar;
 import grammar.Grammar;
 
 import wordanalyzer.Word;
-import wordanalyzer.words.WD;
+import wordanalyzer.WD;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;

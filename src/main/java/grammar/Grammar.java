@@ -1,8 +1,8 @@
 package grammar;
 
 import lombok.Getter;
+import wordanalyzer.WD;
 import wordanalyzer.Word;
-import wordanalyzer.words.*;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

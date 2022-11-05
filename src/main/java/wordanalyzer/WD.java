@@ -1,4 +1,4 @@
-package wordanalyzer.words;
+package wordanalyzer;
 
 public enum WD {
     A,
