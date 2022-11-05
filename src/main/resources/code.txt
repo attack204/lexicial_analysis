@@ -1,0 +1,15 @@
+int main() {  //compilation
+    int a = 1;
+    int b = 2;
+    bool c = true;
+    if (a >= b) {
+        c = false;
+    } else {
+        c = true;
+    }
+    float d = 1;
+    while (b < 10) {
+        d = d + 1;
+    }
+    return 0;
+}
