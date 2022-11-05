@@ -3,11 +3,9 @@ package parser;
 import grammar.Char;
 import grammar.NTChar;
 import grammar.Grammar;
-import grammar.V.Ch;
-import grammar.V.S;
-//import grammar.V.S_;
+
 import wordanalyzer.Word;
-import wordanalyzer.words.END;
+import wordanalyzer.words.WD;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -117,7 +115,7 @@ public class Parser {
     private void doMakeC() {
         //C＝{CLOSURE({[S'→·S]})}
         LinkedHashSet<Item> I0 = new LinkedHashSet<>();
-        I0.add(new Item(new NTChar(Ch.S_).a(new S()), 0));
+        I0.add(new Item(new NTChar(WD.S_).a(new NTChar(WD.S)), 0));
         C.add(CLOSURE(I0));
         LinkedHashSet<LinkedHashSet<Item>> J = new LinkedHashSet<>();
         int size;
@@ -178,7 +176,7 @@ public class Parser {
             if (!x.isTerminal()) FOLLOW.put((NTChar) x, new HashSet<>());
         }
         //将#加入FOLLOW(S)中
-        FOLLOW.get(new S()).add(new END());
+        FOLLOW.get(new NTChar(WD.S)).add(new Word(WD.END));
         int startSize;
         AtomicInteger endSize = new AtomicInteger(1);
         do {
@@ -246,7 +244,7 @@ public class Parser {
                     }
                 }
                 //A→α·∈Ii且A≠S'
-                else if (!(A.getType() == Ch.S_)) {
+                else if (!(A.getMy_type() == WD.S_)) {
                     for (int j = 0; j < G.size(); j++) {
                         //G[j]是产生式A→α
                         if (A.equals(G.get(j)) && A.getProdRight().equals(G.get(j).getProdRight())) {
@@ -262,7 +260,7 @@ public class Parser {
                 //S'→S·
                 else {
                     //ACTION[i , #]=acc
-                    table.getACTION()[i].put(new END(), new ParseTable.A_i("acc", -1));
+                    table.getACTION()[i].put(new Word(WD.END), new ParseTable.A_i("acc", -1));
                 }
             }
         }
@@ -311,9 +309,9 @@ public class Parser {
                 charStack.push(A);
                 state.push(table.getGOTO()[state.peek()].get(A).getR());
                 //打印产生式A→β
-                System.out.print(A.getClass().getSimpleName() + "->");
+                System.out.print(A.getMy_type().toString() + "->");
                 for (Char c : A.getProdRight()) {
-                    System.out.print(c.getClass().getSimpleName() + " ");
+                    System.out.print(c.getMy_type().toString() + " ");
                 }
                 System.out.println();
             }
@@ -323,7 +321,7 @@ public class Parser {
             }
             //打印文法符号栈
             for (Char aChar : charStack) {
-                System.out.print(aChar.getClass().getSimpleName() + " ");
+                System.out.print(aChar.getMy_type().toString() + " ");
             }
             System.out.println();
         }
@@ -334,9 +332,9 @@ public class Parser {
         //打印文法
         System.out.println("文法：");
         for (int i = 0; i < G.size(); i++) {
-            System.out.print("P" + i + " " + G.get(i).getClass().getSimpleName() + "->");
+            System.out.print("P" + i + " " + G.get(i).getMy_type().toString() + "->");
             for (Char aChar : G.get(i).getProdRight()) {
-                System.out.print(aChar.getClass().getSimpleName() + " ");
+                System.out.print(aChar.getMy_type().toString()+ " ");
             }
             System.out.println();
         }
@@ -348,10 +346,10 @@ public class Parser {
             System.out.println("I" + t + ":");
             for (Item item : items) {
                 int pos = 0;
-                System.out.print(item.getLeftChar().getClass().getSimpleName() + "->");
+                System.out.print(item.getLeftChar().getMy_type().toString() + "->");
                 for (Char aChar : item.getLeftChar().getProdRight()) {
                     if (pos == item.getPointPos()) System.out.print("·");
-                    System.out.print(aChar.getClass().getSimpleName() + " ");
+                    System.out.print(aChar.getMy_type().toString() + " ");
                     pos++;
                 }
                 if (pos == item.getPointPos()) System.out.print("·");
@@ -363,16 +361,16 @@ public class Parser {
         //打印FIRST集
         System.out.println("FIRST集：");
         FIRST.forEach((aChar, chars) -> {
-            System.out.println(aChar.getClass().getSimpleName() + ":");
-            chars.forEach(aChar1 -> System.out.print(aChar1.getClass().getSimpleName() + " "));
+            System.out.println(aChar.getMy_type().toString() + ":");
+            chars.forEach(aChar1 -> System.out.print(aChar1.getMy_type().toString() + " "));
             System.out.println();
         });
         System.out.println("--------------------------------------------------------------------------------");
         //打印FOLLOW集
         System.out.println("FOLLOW集：");
         FOLLOW.forEach((aChar, chars) -> {
-            System.out.println(aChar.getClass().getSimpleName() + ":");
-            chars.forEach(aChar1 -> System.out.print(aChar1.getClass().getSimpleName() + " "));
+            System.out.println(aChar.getMy_type().toString() + ":");
+            chars.forEach(aChar1 -> System.out.print(aChar1.getMy_type().toString() + " "));
             System.out.println();
         });
         System.out.println("--------------------------------------------------------------------------------");
@@ -380,7 +378,7 @@ public class Parser {
         System.out.println("ACTION表：");
         for (int i = 0; i < table.getACTION().length; i++) {
             System.out.print("s" + i + " ");
-            table.getACTION()[i].forEach((x, tChar) -> System.out.print(x.getClass().getSimpleName() + " " + tChar.getL() + tChar.getR() + "|||"));
+            table.getACTION()[i].forEach((x, tChar) -> System.out.print(x.getMy_type().toString() + " " + tChar.getL() + tChar.getR() + "|||"));
             System.out.println();
         }
         System.out.println("--------------------------------------------------------------------------------");
@@ -388,7 +386,7 @@ public class Parser {
         System.out.println("GOTO表：");
         for (int i = 0; i < table.getGOTO().length; i++) {
             System.out.print("s" + i + " ");
-            table.getGOTO()[i].forEach((x, tChar) -> System.out.print(x.getClass().getSimpleName() + " " + tChar.getR() + "|||"));
+            table.getGOTO()[i].forEach((x, tChar) -> System.out.print(x.getMy_type().toString() + " " + tChar.getR() + "|||"));
             System.out.println();
         }
         System.out.println("--------------------------------------------------------------------------------");

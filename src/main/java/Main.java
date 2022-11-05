@@ -30,7 +30,7 @@ public class Main {
                 ArrayList<Word> wordList = wordAnalyzer.analyze(code);
                 System.out.println("词法分析：");
                 for (Word word : wordList) {
-                    System.out.println("<" + word.getClass().getSimpleName() + "> " + word);
+                    System.out.println("<" + word.getMy_type().toString() + "> " + word);
                 }
                 System.out.println("--------------------------------------------------------------------------------");
                 //SLR(1)语法分析

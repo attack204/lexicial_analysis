@@ -1,6 +1,7 @@
 package grammar;
 
 import lombok.Getter;
+import wordanalyzer.words.WD;
 
 //文法符号
 public abstract class Char {
@@ -11,6 +12,7 @@ public abstract class Char {
     public Char() {
         setIsTerminal();
     }
+    public abstract WD getMy_type();
 
     /**
      * 设置isTerminal

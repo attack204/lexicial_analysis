@@ -1,6 +1,6 @@
 package wordanalyzer;
 
-import wordanalyzer.words.END;
+import wordanalyzer.words.WD;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -54,7 +54,7 @@ public class WordAnalyzer {
             }
         }
         //将#加入result中
-        result.add(new END());
+        result.add(new Word(WD.END));
         return result;
     }
 

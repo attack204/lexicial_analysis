@@ -1,0 +1,477 @@
+文法：
+P0 S->O 
+P1 O->F 
+P2 O->O F 
+P3 F->T N X A 
+P4 T->FLOAT 
+P5 T->INT 
+P6 T->STRING 
+P7 T->BOOL 
+P8 N->MAIN 
+P9 N->ID 
+P10 X->XKH_L XKH_R 
+P11 X->XKH_L T ID XKH_R 
+P12 A->DKH_L DKH_R 
+P13 A->DKH_L L DKH_R 
+P14 L->Y 
+P15 L->L Y 
+P16 Y->D 
+P17 Y->Z 
+P18 Y->I 
+P19 Y->W 
+P20 Y->R 
+P21 D->T ID SEMICOLON 
+P22 Z->B 
+P23 Z->T B 
+P24 B->ID ASSIGN E SEMICOLON 
+P25 E->XKH_L E XKH_R 
+P26 E->V 
+P27 E->E G E 
+P28 V->ID 
+P29 V->C 
+P30 C->FLOAT_VALUE 
+P31 C->INT_VALUE 
+P32 C->STRING_VALUE 
+P33 C->BOOL_VALUE 
+P34 G->ADD 
+P35 G->SUBTRACT 
+P36 G->MULTIPLY 
+P37 G->DIVIDE 
+P38 I->J 
+P39 I->K 
+P40 J->IF XKH_L P XKH_R A 
+P41 K->J ELSE A 
+P42 P->V Q V 
+P43 Q->GREATER_EQUAL 
+P44 Q->LESS_EQUAL 
+P45 Q->GREATER 
+P46 Q->LESS 
+P47 Q->EQUAL 
+P48 Q->NOTEQUAL 
+P49 W->WHILE XKH_L P XKH_R A 
+P50 R->RETURN V SEMICOLON 
+--------------------------------------------------------------------------------
+项目集族：
+I0:
+S_->·S 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I1:
+S_->S ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I2:
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I3:
+O->O F ·
+F->T N ·X A 
+E->E G ·E 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I4:
+D->T ID ·SEMICOLON 
+K->J ELSE ·A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I5:
+X->XKH_L T ·ID XKH_R 
+A->DKH_L L ·DKH_R 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I6:
+X->XKH_L XKH_R ·
+B->ID ASSIGN ·E SEMICOLON 
+J->IF XKH_L ·P XKH_R A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I7:
+F->T N X ·A 
+E->E G E ·
+O->O F ·
+F->T N ·X A 
+E->E G ·E 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I8:
+K->J ELSE A ·
+X->XKH_L T ·ID XKH_R 
+A->DKH_L L ·DKH_R 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I9:
+D->T ID SEMICOLON ·
+X->XKH_L XKH_R ·
+B->ID ASSIGN ·E SEMICOLON 
+J->IF XKH_L ·P XKH_R A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I10:
+X->XKH_L T ID ·XKH_R 
+A->DKH_L L DKH_R ·
+D->T ID ·SEMICOLON 
+K->J ELSE ·A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I11:
+B->ID ASSIGN E ·SEMICOLON 
+J->IF XKH_L P ·XKH_R A 
+X->XKH_L T ·ID XKH_R 
+A->DKH_L L ·DKH_R 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I12:
+F->T N X A ·
+F->T N X ·A 
+E->E G E ·
+O->O F ·
+F->T N ·X A 
+E->E G ·E 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I13:
+X->XKH_L T ID XKH_R ·
+D->T ID SEMICOLON ·
+X->XKH_L XKH_R ·
+B->ID ASSIGN ·E SEMICOLON 
+J->IF XKH_L ·P XKH_R A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I14:
+B->ID ASSIGN E SEMICOLON ·
+J->IF XKH_L P XKH_R ·A 
+X->XKH_L T ID ·XKH_R 
+A->DKH_L L DKH_R ·
+D->T ID ·SEMICOLON 
+K->J ELSE ·A 
+T->FLOAT ·
+X->XKH_L ·XKH_R 
+X->XKH_L ·T ID XKH_R 
+A->DKH_L ·L DKH_R 
+B->ID ·ASSIGN E SEMICOLON 
+J->IF ·XKH_L P XKH_R A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+I15:
+J->IF XKH_L P XKH_R A ·
+K->J ELSE A ·
+X->XKH_L T ·ID XKH_R 
+A->DKH_L L ·DKH_R 
+S->O ·
+O->O ·F 
+F->T ·N X A 
+D->T ·ID SEMICOLON 
+E->E ·G E 
+K->J ·ELSE A 
+S->·O 
+O->·O F 
+F->·T N X A 
+T->·FLOAT 
+X->·XKH_L XKH_R 
+X->·XKH_L T ID XKH_R 
+A->·DKH_L L DKH_R 
+D->·T ID SEMICOLON 
+B->·ID ASSIGN E SEMICOLON 
+E->·E G E 
+J->·IF XKH_L P XKH_R A 
+K->·J ELSE A 
+--------------------------------------------------------------------------------
+FIRST集：
+FLOAT:
+FLOAT 
+S:
+FLOAT 
+--------------------------------------------------------------------------------
+FOLLOW集：
+S:
+END 
+--------------------------------------------------------------------------------
+ACTION表：
+s0 FLOAT s2|||
+s1 END s4|||
+s2 END s6|||
+s3 END s4|||
+s4 SEMICOLON s9|||
+s5 ID s10|||
+s6 END s6|||
+s7 END s4|||
+s8 END s10|||
+s9 END s6|||
+s10 XKH_R s13|||
+s11 SEMICOLON s14|||
+s12 END s4|||
+s13 END s6|||
+s14 END s13|||
+s15 END s10|||
+--------------------------------------------------------------------------------
+GOTO表：
+s0 S 1|||
+s1 F 3|||
+s2 T 5|||
+s3 X 7|||
+s4 A 8|||
+s5 F 3|||
+s6 E 11|||
+s7 A 12|||
+s8 F 3|||
+s9 E 11|||
+s10 A 8|||
+s11 F 3|||
+s12 A 12|||
+s13 E 11|||
+s14 A 15|||
+s15 F 3|||
+--------------------------------------------------------------------------------
+源程序：
+int main() {  //compilation
+    int a = 1;
+    int b = 2;
+    bool c = true;
+    if (a >= b) {
+        c = false;
+    } else {
+        c = true;
+    }
+    float d = 1;
+    while (b < 10) {
+        d = d + 1;
+    }
+    return 0;
+}
+
+--------------------------------------------------------------------------------
+java.lang.InstantiationException: wordanalyzer.Word
+	at java.base/java.lang.Class.newInstance(Class.java:671)
+	at wordanalyzer.WordAnalyzer.addWordToResult(WordAnalyzer.java:69)
+	at wordanalyzer.WordAnalyzer.analyze(WordAnalyzer.java:50)
+	at Main.main(Main.java:30)
+Caused by: java.lang.NoSuchMethodException: wordanalyzer.Word.<init>()
+	at java.base/java.lang.Class.getConstructor0(Class.java:3617)
+	at java.base/java.lang.Class.newInstance(Class.java:658)
+	... 3 more
