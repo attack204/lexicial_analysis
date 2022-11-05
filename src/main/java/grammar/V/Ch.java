@@ -18,4 +18,11 @@ public enum Ch {
     Q,
     R,
     S,
+    S_,
+    T,
+    V,
+    W,
+    X,
+    Y,
+    Z
 }
