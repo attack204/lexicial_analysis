@@ -1,6 +1,5 @@
 package grammar;
 
-import grammar.V.Ch;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -13,14 +12,10 @@ import java.util.ArrayList;
 public class NTChar extends Char {
     //产生式右部
 
-    public NTChar(Ch ch) {
-        type = ch;
-    }
     @Getter
     private final ArrayList<Char> prodRight = new ArrayList<>();
 
-    @Getter
-    private Ch type;
+
 
     @Override
     protected void setIsTerminal() {

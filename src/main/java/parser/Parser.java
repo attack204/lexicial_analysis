@@ -3,14 +3,15 @@ package parser;
 import grammar.Char;
 import grammar.NTChar;
 import grammar.Grammar;
-import grammar.V.Ch;
 import grammar.V.S;
 //import grammar.V.S_;
+import grammar.V.S_;
 import wordanalyzer.Word;
 import wordanalyzer.words.END;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 //SLR(1)语法分析器
 public class Parser {
@@ -117,7 +118,7 @@ public class Parser {
     private void doMakeC() {
         //C＝{CLOSURE({[S'→·S]})}
         LinkedHashSet<Item> I0 = new LinkedHashSet<>();
-        I0.add(new Item(new NTChar(Ch.S_).a(new S()), 0));
+        I0.add(new Item(new S_().a(new S()), 0));
         C.add(CLOSURE(I0));
         LinkedHashSet<LinkedHashSet<Item>> J = new LinkedHashSet<>();
         int size;
@@ -246,7 +247,7 @@ public class Parser {
                     }
                 }
                 //A→α·∈Ii且A≠S'
-                else if (!(A.getType() == Ch.S_)) {
+                else if (!(A instanceof S_)) {
                     for (int j = 0; j < G.size(); j++) {
                         //G[j]是产生式A→α
                         if (A.equals(G.get(j)) && A.getProdRight().equals(G.get(j).getProdRight())) {
