@@ -3,27 +3,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //词法分析器
-public class TokenAnalyzer {
+public class LexicalAalyzer {
     //终结符匹配顺序列表
-    private final ArrayList<Token> Tokens;
+    private final ArrayList<EndToken> endTokens;
 
     //分析结果
-    private final ArrayList<Token> result = new ArrayList<>();
+    private final ArrayList<EndToken> result = new ArrayList<>();
 
-    public TokenAnalyzer() {
-        Tokens = AnalyzeOrder.getTokens();
+    public LexicalAalyzer() {
+        endTokens = AnalyzeOrder.getEND_TOKENS();
     }
 
     /**
      * 词法分析
      *
      * @param code 源程序
-     * @return java.util.ArrayList<Token>
+     * @return java.util.ArrayList<EndToken>
      */
-    public ArrayList<Token> analyze(String code) throws Exception {
+    public ArrayList<EndToken> analyze(String code) throws Exception {
         int pos = 0;
         while (pos < code.length()) {
-            for (Token i : Tokens) {
+            for (EndToken i : endTokens) {
                 Pattern pattern = i.getPattern();
                 //正则匹配
                 Matcher matcher = pattern.matcher(code);
@@ -49,19 +49,19 @@ public class TokenAnalyzer {
             }
         }
         //将#加入result中
-        result.add(new Token(WD.END));
+        result.add(new EndToken(WD.END));
         return result;
     }
 
     /**
      * 将终结符加入result中
      *
-     * @param origToken 匹配用的Token对象
+     * @param origEndToken 匹配用的Token对象
      * @param value 属性值
      */
-    private void addTokenToResult(Token origToken, String value) throws Exception {
-        Token newToken = new Token(origToken.getMy_type());
-        newToken.setValue(value);
-        result.add(newToken);
+    private void addTokenToResult(EndToken origEndToken, String value) throws Exception {
+        EndToken newEndToken = new EndToken(origEndToken.getMy_type());
+        newEndToken.setValue(value);
+        result.add(newEndToken);
     }
 }

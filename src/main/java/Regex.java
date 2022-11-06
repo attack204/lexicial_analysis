@@ -1,9 +1,8 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 //正则表达式
-public  class Patterns {
+public  class Regex {
 
     public static Map<String, String> pat;
     static {
@@ -56,6 +55,10 @@ public  class Patterns {
         pat.put("END", "#");
     }
     static String find(String key) {
-        return pat.get(key);
+        if(!pat.containsKey(key)) {
+            return null;
+        } else {
+            return pat.get(key);
+        }
     }
 }

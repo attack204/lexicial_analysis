@@ -5,7 +5,7 @@ import lombok.ToString;
 //项目
 @ToString
 @AllArgsConstructor
-public class Item {
+public class Project {
     //项目左部非终结符
     @Getter
     private final NotEndToken leftChar;
@@ -27,7 +27,7 @@ public class Item {
     @Override
     public boolean equals(Object o) {
         if (!getClass().isInstance(o)) return false;
-        Item x = (Item) o;
+        Project x = (Project) o;
         return leftChar.equals(x.leftChar) && leftChar.getProdRight().equals(x.leftChar.getProdRight()) && pointPos == x.pointPos;
     }
 

@@ -4,7 +4,7 @@ import lombok.ToString;
 import java.util.ArrayList;
 
 //非终结符（可看作产生式左部）
-//这个定义非常的秒，定义了NotEndToken类继承自Char类，并维护了right集合，这样就能表示产生式了
+//这个定义非常的妙，定义了NotEndToken类继承自Char类，并维护了right集合，这样就能表示产生式了
 //A->B/C//D
 @ToString
 public class NotEndToken extends AbstractToken {

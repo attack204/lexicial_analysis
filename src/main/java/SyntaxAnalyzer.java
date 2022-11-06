@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //SLR(1)语法分析器
-public class Parser {
+public class SyntaxAnalyzer {
     //产生式
     private final ArrayList<NotEndToken> G;
 
@@ -11,18 +11,18 @@ public class Parser {
 
     //项目集族
     //C是一个集合，其中集合的元素又是一个集合，value集合描述了DFA中每一个节点的产生式
-    private final LinkedHashSet<LinkedHashSet<Item>> C = new LinkedHashSet<>();
+    private final LinkedHashSet<LinkedHashSet<Project>> C = new LinkedHashSet<>();
 
     //FIRST集
-    private final HashMap<AbstractToken, HashSet<Token>> FIRST = new HashMap<>();
+    private final HashMap<AbstractToken, HashSet<EndToken>> FIRST = new HashMap<>();
 
     //FOLLOW集
-    private final HashMap<NotEndToken, HashSet<Token>> FOLLOW = new HashMap<>();
+    private final HashMap<NotEndToken, HashSet<EndToken>> FOLLOW = new HashMap<>();
 
     //SLR(1)分析表
     private final AnalysisTable table = new AnalysisTable();
 
-    public Parser() { //在构造函数中初始化goto表和action表
+    public SyntaxAnalyzer() { //在构造函数中初始化goto表和action表
         G = Grammar.getG();
         X = Grammar.getX();
         GenerateTable();
@@ -36,15 +36,15 @@ public class Parser {
      * 2. 第二步在G中枚举所有的B→γ
      * 3. 将所有符合条件的B→γ加入到闭包中
      * @param I 项目集
-     * @return java.util.LinkedHashSet<Item>
+     * @return java.util.LinkedHashSet<Project>
      */
-    private LinkedHashSet<Item> CLOSURE(LinkedHashSet<Item> I) {
-        LinkedHashSet<Item> J = new LinkedHashSet<>();
+    private LinkedHashSet<Project> GenerateClosure(LinkedHashSet<Project> I) {
+        LinkedHashSet<Project> J = new LinkedHashSet<>();
         int size;
         do {
             size = I.size();
             //I中的每个项A→α∙Bβ
-            for (Item A : I) {
+            for (Project A : I) {
                 ArrayList<AbstractToken> prod = A.getLeftChar().getProdRight(); //枚举每个项的right集合
                 int pointPos = A.getPointPos();
                 //A不是归约项目
@@ -56,7 +56,7 @@ public class Parser {
                         for (NotEndToken p : G) {
                             if (B.equals(p)) {
                                 //将B→∙γ加入J中
-                                J.add(new Item(p, 0));
+                                J.add(new Project(p, 0));
                             }
                         }
                     }
@@ -81,19 +81,19 @@ public class Parser {
      * @param I 项目集
 	 * @param X 文法符号
      */
-    private LinkedHashSet<Item> FindGoto(LinkedHashSet<Item> I, AbstractToken X) {
+    private LinkedHashSet<Project> FindGoto(LinkedHashSet<Project> I, AbstractToken X) {
         //将J初始化为空集
-        LinkedHashSet<Item> J = new LinkedHashSet<>();
+        LinkedHashSet<Project> J = new LinkedHashSet<>();
         //I中的每个项A→α∙Xβ
-        for (Item A : I) {
+        for (Project A : I) {
             ArrayList<AbstractToken> prod = A.getLeftChar().getProdRight();
             int pointPos = A.getPointPos();
             if (pointPos < prod.size() && prod.get(pointPos).equals(X)) { //找到一个满足条件的A→αX∙β
                 //将项A→αX∙β加入集合J中
-                J.add(new Item(A.getLeftChar(), pointPos + 1));
+                J.add(new Project(A.getLeftChar(), pointPos + 1));
             }
         }
-        return CLOSURE(J);
+        return GenerateClosure(J);
     }
 
     /**
@@ -102,20 +102,20 @@ public class Parser {
      * C表示DFA的所有节点
      * 思路和求GOTO集合类似，只是这里的Node从产生式变成了集合
      */
-    private void doMakeC() {
-        //C＝{CLOSURE({[S'→·S]})}
-        LinkedHashSet<Item> I0 = new LinkedHashSet<>();
-        I0.add(new Item(new NotEndToken(WD.S_).a(new NotEndToken(WD.S)), 0));
-        C.add(CLOSURE(I0));
-        LinkedHashSet<LinkedHashSet<Item>> J = new LinkedHashSet<>();
+    private void GenerateProjectSet() {
+        //C＝{GenerateClosure({[S'→·S]})}
+        LinkedHashSet<Project> I0 = new LinkedHashSet<>();
+        I0.add(new Project(new NotEndToken(WD.S_).a(new NotEndToken(WD.S)), 0));
+        C.add(GenerateClosure(I0));
+        LinkedHashSet<LinkedHashSet<Project>> J = new LinkedHashSet<>();
         int size;
         do {
             size = C.size();
             //C中的每个项集I
-            for (LinkedHashSet<Item> I : C) {
+            for (LinkedHashSet<Project> I : C) {
                 //每个文法符号x
                 for (AbstractToken x : X) {
-                    LinkedHashSet<Item> g = FindGoto(I, x); //这里要求出goto集合
+                    LinkedHashSet<Project> g = FindGoto(I, x); //这里要求出goto集合
                     if (!g.isEmpty()) {
                         //将GOTO(I, X)加入C中
                         J.add(g);
@@ -136,9 +136,9 @@ public class Parser {
      */
     private void GenerateFirst() {
         for (AbstractToken x : X) {
-            HashSet<Token> Fx = new HashSet<>();
+            HashSet<EndToken> Fx = new HashSet<>();
             //如果x是一个终结符，那么FIRST(X)＝{X}
-            if (x.isEndToken()) Fx.add((Token) x);
+            if (x.isEndToken()) Fx.add((EndToken) x);
             FIRST.put(x, Fx);
         }
         int startSize;
@@ -164,7 +164,7 @@ public class Parser {
             if (!x.isEndToken()) FOLLOW.put((NotEndToken) x, new HashSet<>());
         }
         //将#加入FOLLOW(S)中
-        FOLLOW.get(new NotEndToken(WD.S)).add(new Token(WD.END));
+        FOLLOW.get(new NotEndToken(WD.S)).add(new EndToken(WD.END));
         int startSize;
         AtomicInteger endSize = new AtomicInteger(1);
         do {
@@ -201,23 +201,23 @@ public class Parser {
      */
     private void GenerateTable() {
         //构造G'的规范LR(0)项集族C＝{I0, I1, …, In}
-        doMakeC();
+        GenerateProjectSet();
         GenerateFirst();
         GenerateFollow();
-        ArrayList<LinkedHashSet<Item>> I = new ArrayList<>(C);
+        ArrayList<LinkedHashSet<Project>> I = new ArrayList<>(C);
         table.setACTION(new HashMap[I.size()]);
         table.setGOTO(new HashMap[I.size()]);
         for (int i = 0; i < I.size(); i++) {
             table.getACTION()[i] = new HashMap<>();
             table.getGOTO()[i] = new HashMap<>();
-            LinkedHashSet<Item> Ii = I.get(i);
-            for (Item item : Ii) {
-                NotEndToken A = item.getLeftChar();
-                if (item.getPointPos() < A.getProdRight().size()) {
+            LinkedHashSet<Project> Ii = I.get(i);
+            for (Project project : Ii) {
+                NotEndToken A = project.getLeftChar();
+                if (project.getPointPos() < A.getProdRight().size()) {
                     //A→α·aβ∈Ii
-                    if (A.getProdRight().get(item.getPointPos()).isEndToken()) {
+                    if (A.getProdRight().get(project.getPointPos()).isEndToken()) {
                         //GOTO(Ii, a)＝Ij
-                        Token a = (Token) A.getProdRight().get(item.getPointPos());
+                        EndToken a = (EndToken) A.getProdRight().get(project.getPointPos());
                         int j = I.indexOf(FindGoto(Ii, a));
                         //ACTION[i, a]＝sj
                         table.getACTION()[i].put(a, new AnalysisTable.A_i("s", j));
@@ -225,7 +225,7 @@ public class Parser {
                     //A→α.Bβ∈Ii
                     else {
                         //GOTO(Ii, B)＝Ij
-                        NotEndToken B = (NotEndToken) A.getProdRight().get(item.getPointPos());
+                        NotEndToken B = (NotEndToken) A.getProdRight().get(project.getPointPos());
                         int j = I.indexOf(FindGoto(Ii, B));
                         //GOTO[i, B]＝j
                         table.getGOTO()[i].put(B, new AnalysisTable.G_i(j));
@@ -237,7 +237,7 @@ public class Parser {
                         //G[j]是产生式A→α
                         if (A.equals(G.get(j)) && A.getProdRight().equals(G.get(j).getProdRight())) {
                             //∀a∈FOLLOW(A)
-                            for (Token a : FOLLOW.get(A)) {
+                            for (EndToken a : FOLLOW.get(A)) {
                                 //ACTION[ i, a ]＝rj
                                 table.getACTION()[i].put(a, new AnalysisTable.A_i("r", j));
                             }
@@ -248,7 +248,7 @@ public class Parser {
                 //S'→S·
                 else {
                     //ACTION[i , #]=acc
-                    table.getACTION()[i].put(new Token(WD.END), new AnalysisTable.A_i("acc", -1));
+                    table.getACTION()[i].put(new EndToken(WD.END), new AnalysisTable.A_i("acc", -1));
                 }
             }
         }
@@ -257,16 +257,16 @@ public class Parser {
     /**
      * SLR(1)语法分析
      *
-     * @param TokenList 终结符列表
+     * @param endTokenList 终结符列表
      * @return boolean
      */
-    public boolean parse(ArrayList<Token> TokenList) {
+    public boolean parse(ArrayList<EndToken> endTokenList) {
         Stack<Integer> state = new Stack<>(); //状态栈
         Stack<AbstractToken> abstractTokenStack = new Stack<>(); //符号栈
         state.push(0);
-        Token a;
-        for (int w = 0; w < TokenList.size(); ) { //枚举所有的Token
-            a = TokenList.get(w);
+        EndToken a;
+        for (int w = 0; w < endTokenList.size(); ) { //枚举所有的Token
+            a = endTokenList.get(w);
             //s是栈顶的状态
             int s = state.peek();
             //i＝ACTION[s，a]
@@ -329,17 +329,17 @@ public class Parser {
         //打印项目集族
         System.out.println("项目集族：");
         int t = 0;
-        for (LinkedHashSet<Item> items : C) {
+        for (LinkedHashSet<Project> projects : C) {
             System.out.println("I" + t + ":");
-            for (Item item : items) {
+            for (Project project : projects) {
                 int pos = 0;
-                System.out.print(item.getLeftChar().getMy_type().toString() + "->");
-                for (AbstractToken aAbstractToken : item.getLeftChar().getProdRight()) {
-                    if (pos == item.getPointPos()) System.out.print("·");
+                System.out.print(project.getLeftChar().getMy_type().toString() + "->");
+                for (AbstractToken aAbstractToken : project.getLeftChar().getProdRight()) {
+                    if (pos == project.getPointPos()) System.out.print("·");
                     System.out.print(aAbstractToken.getMy_type().toString() + " ");
                     pos++;
                 }
-                if (pos == item.getPointPos()) System.out.print("·");
+                if (pos == project.getPointPos()) System.out.print("·");
                 System.out.println();
             }
             t++;

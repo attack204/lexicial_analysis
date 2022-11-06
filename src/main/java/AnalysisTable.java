@@ -7,7 +7,7 @@ import java.util.HashMap;
 @Data
 public class AnalysisTable {
     //ACTION表
-    private HashMap<Token, A_i>[] ACTION;
+    private HashMap<EndToken, A_i>[] ACTION;
 
     //GOTO表
     private HashMap<NotEndToken, G_i>[] GOTO;

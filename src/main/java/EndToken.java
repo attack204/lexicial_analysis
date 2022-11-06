@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 //终结符
 @ToString
-public class Token extends AbstractToken {
+public class EndToken extends AbstractToken {
     @Getter
     @ToString.Exclude
     protected Pattern pattern;
@@ -21,10 +21,7 @@ public class Token extends AbstractToken {
         return my_type;
     }
 
-    private final ArrayList<AbstractToken> prodRight = new ArrayList<>();
-
-
-    public Token(WD wd_) {
+    public EndToken(WD wd_) {
         my_type = wd_;
         type = (wd_ == WD.OTHER_ID ?  WD.OTHER.ordinal() : my_type.ordinal()) - 1;
     }
@@ -41,12 +38,12 @@ public class Token extends AbstractToken {
      * 编译正则表达式并赋值给pattern
      * 返回this
      *
-     * @return Token
+     * @return EndToken
      */
 
-    public Token makePattern(WD wd) {
+    public EndToken makePattern(WD wd) {
 
-        pattern = Pattern.compile(Patterns.find(wd.toString()));
+        pattern = Pattern.compile(Regex.find(wd.toString()));
 
         return this;
     }
