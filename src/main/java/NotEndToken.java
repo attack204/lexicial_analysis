@@ -4,17 +4,17 @@ import lombok.ToString;
 import java.util.ArrayList;
 
 //非终结符（可看作产生式左部）
-//这个定义非常的秒，定义了NTChar类继承自Char类，并维护了right集合，这样就能表示产生式了
+//这个定义非常的秒，定义了NotEndToken类继承自Char类，并维护了right集合，这样就能表示产生式了
 //A->B/C//D
 @ToString
-public class NTChar extends Char {
+public class NotEndToken extends AbstractToken {
     //产生式右部
 
-    public NTChar(WD wd) {
+    public NotEndToken(WD wd) {
         my_type = wd;
     }
     @Getter
-    private final ArrayList<Char> prodRight = new ArrayList<>();
+    private final ArrayList<AbstractToken> prodRight = new ArrayList<>();
 
     @Override
     public WD getMy_type() {
@@ -31,9 +31,9 @@ public class NTChar extends Char {
      * 将c加入产生式右部
      *
      * @param c 文法符号
-     * @return NTChar
+     * @return NotEndToken
      */
-    public NTChar a(Char c) {
+    public NotEndToken a(AbstractToken c) {
         prodRight.add(c);
         return this;
     }

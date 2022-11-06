@@ -7,10 +7,10 @@ import java.util.HashMap;
 @Data
 public class ParseTable {
     //ACTION表
-    private HashMap<Word, A_i>[] ACTION;
+    private HashMap<Token, A_i>[] ACTION;
 
     //GOTO表
-    private HashMap<NTChar, G_i>[] GOTO;
+    private HashMap<NotEndToken, G_i>[] GOTO;
 
     //ACTION表中的项 e.g. s1
     //s 表示移进操作

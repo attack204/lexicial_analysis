@@ -8,7 +8,7 @@ import lombok.ToString;
 public class Item {
     //项目左部非终结符
     @Getter
-    private final NTChar leftChar;
+    private final NotEndToken leftChar;
 
     //'·'在右部中的位置，即表示已经移进到了哪个位置
     //范围：0 ~ leftChar.getProdRight().size()

@@ -7,117 +7,117 @@ import java.util.LinkedHashSet;
 public class Grammar {
     //产生式
     @Getter
-    private static final ArrayList<NTChar> G = new ArrayList<>();
+    private static final ArrayList<NotEndToken> G = new ArrayList<>();
 
     //文法符号集
     @Getter
-    private static final LinkedHashSet<Char> X = new LinkedHashSet<>();
+    private static final LinkedHashSet<AbstractToken> X = new LinkedHashSet<>();
 
     static {
         //S→O
-        G.add(new NTChar(WD.S).a(new NTChar(WD.O)));
+        G.add(new NotEndToken(WD.S).a(new NotEndToken(WD.O)));
         //O→F
-        G.add(new NTChar(WD.O).a(new NTChar(WD.F)));
+        G.add(new NotEndToken(WD.O).a(new NotEndToken(WD.F)));
         //O→OF
-        G.add(new NTChar(WD.O).a(new NTChar(WD.O)).a(new NTChar(WD.F)));
+        G.add(new NotEndToken(WD.O).a(new NotEndToken(WD.O)).a(new NotEndToken(WD.F)));
         //F→TNXA
-        G.add(new NTChar(WD.F).a(new NTChar(WD.T)).a(new NTChar(WD.N)).a(new NTChar(WD.X)).a(new NTChar(WD.A)));
+        G.add(new NotEndToken(WD.F).a(new NotEndToken(WD.T)).a(new NotEndToken(WD.N)).a(new NotEndToken(WD.X)).a(new NotEndToken(WD.A)));
         //T→<float>
-        G.add(new NTChar(WD.T).a(new Word(WD.FLOAT)));
+        G.add(new NotEndToken(WD.T).a(new Token(WD.FLOAT)));
         //T→<int>
-        G.add(new NTChar(WD.T).a(new Word(WD.INT)));
+        G.add(new NotEndToken(WD.T).a(new Token(WD.INT)));
         //T→<string>
-        G.add(new NTChar(WD.T).a(new Word(WD.STRING)));
+        G.add(new NotEndToken(WD.T).a(new Token(WD.STRING)));
         //T→<bool>
-        G.add(new NTChar(WD.T).a(new Word(WD.BOOL)));
+        G.add(new NotEndToken(WD.T).a(new Token(WD.BOOL)));
         //N→<main>
-        G.add(new NTChar(WD.N).a(new Word(WD.MAIN)));
+        G.add(new NotEndToken(WD.N).a(new Token(WD.MAIN)));
         //N→<ID>
-        G.add(new NTChar(WD.N).a(new Word(WD.ID)));
+        G.add(new NotEndToken(WD.N).a(new Token(WD.ID)));
         //X→()
-        G.add(new NTChar(WD.X).a(new Word(WD.XKH_L)).a(new Word(WD.XKH_R)));
+        G.add(new NotEndToken(WD.X).a(new Token(WD.XKH_L)).a(new Token(WD.XKH_R)));
         //X→(T<ID>)
-        G.add(new NTChar(WD.X).a(new Word(WD.XKH_L)).a(new NTChar(WD.T)).a(new Word(WD.ID)).a(new Word(WD.XKH_R)));
+        G.add(new NotEndToken(WD.X).a(new Token(WD.XKH_L)).a(new NotEndToken(WD.T)).a(new Token(WD.ID)).a(new Token(WD.XKH_R)));
         //A→{}
-        G.add(new NTChar(WD.A).a(new Word(WD.DKH_L)).a(new Word(WD.DKH_R)));
+        G.add(new NotEndToken(WD.A).a(new Token(WD.DKH_L)).a(new Token(WD.DKH_R)));
         //A→{L}
-        G.add(new NTChar(WD.A).a(new Word(WD.DKH_L)).a(new NTChar(WD.L)).a(new Word(WD.DKH_R)));
+        G.add(new NotEndToken(WD.A).a(new Token(WD.DKH_L)).a(new NotEndToken(WD.L)).a(new Token(WD.DKH_R)));
         //L→Y
-        G.add(new NTChar(WD.L).a(new NTChar(WD.Y)));
+        G.add(new NotEndToken(WD.L).a(new NotEndToken(WD.Y)));
         //L→LY
-        G.add(new NTChar(WD.L).a(new NTChar(WD.L)).a(new NTChar(WD.Y)));
+        G.add(new NotEndToken(WD.L).a(new NotEndToken(WD.L)).a(new NotEndToken(WD.Y)));
         //Y→D
-        G.add(new NTChar(WD.Y).a(new NTChar(WD.D)));
+        G.add(new NotEndToken(WD.Y).a(new NotEndToken(WD.D)));
         //Y→Z
-        G.add(new NTChar(WD.Y).a(new NTChar(WD.Z)));
+        G.add(new NotEndToken(WD.Y).a(new NotEndToken(WD.Z)));
         //Y→I
-        G.add(new NTChar(WD.Y).a(new NTChar(WD.I)));
+        G.add(new NotEndToken(WD.Y).a(new NotEndToken(WD.I)));
         //Y→W
-        G.add(new NTChar(WD.Y).a(new NTChar(WD.W)));
+        G.add(new NotEndToken(WD.Y).a(new NotEndToken(WD.W)));
         //Y→R
-        G.add(new NTChar(WD.Y).a(new NTChar(WD.R)));
+        G.add(new NotEndToken(WD.Y).a(new NotEndToken(WD.R)));
         //D→T<ID><;>
-        G.add(new NTChar(WD.D).a(new NTChar(WD.T)).a(new Word(WD.ID)).a(new Word(WD.SEMICOLON)));
+        G.add(new NotEndToken(WD.D).a(new NotEndToken(WD.T)).a(new Token(WD.ID)).a(new Token(WD.SEMICOLON)));
         //Z→B
-        G.add(new NTChar(WD.Z).a(new NTChar(WD.B)));
+        G.add(new NotEndToken(WD.Z).a(new NotEndToken(WD.B)));
         //Z→TB
-        G.add(new NTChar(WD.Z).a(new NTChar(WD.T)).a(new NTChar(WD.B)));
+        G.add(new NotEndToken(WD.Z).a(new NotEndToken(WD.T)).a(new NotEndToken(WD.B)));
         //B→<ID>=E<;>
-        G.add(new NTChar(WD.B).a(new Word(WD.ID)).a(new Word(WD.ASSIGN)).a(new NTChar(WD.E)).a(new Word(WD.SEMICOLON)));
+        G.add(new NotEndToken(WD.B).a(new Token(WD.ID)).a(new Token(WD.ASSIGN)).a(new NotEndToken(WD.E)).a(new Token(WD.SEMICOLON)));
         //E→(E)
-        G.add(new NTChar(WD.E).a(new Word(WD.XKH_L)).a(new NTChar(WD.E)).a(new Word(WD.XKH_R)));
+        G.add(new NotEndToken(WD.E).a(new Token(WD.XKH_L)).a(new NotEndToken(WD.E)).a(new Token(WD.XKH_R)));
         //E→V
-        G.add(new NTChar(WD.E).a(new NTChar(WD.V)));
+        G.add(new NotEndToken(WD.E).a(new NotEndToken(WD.V)));
         //E→EGE
-        G.add(new NTChar(WD.E).a(new NTChar(WD.E)).a(new NTChar(WD.G)).a(new NTChar(WD.E)));
+        G.add(new NotEndToken(WD.E).a(new NotEndToken(WD.E)).a(new NotEndToken(WD.G)).a(new NotEndToken(WD.E)));
         //V→<ID>
-        G.add(new NTChar(WD.V).a(new Word(WD.ID)));
+        G.add(new NotEndToken(WD.V).a(new Token(WD.ID)));
         //V→C
-        G.add(new NTChar(WD.V).a(new NTChar(WD.C)));
+        G.add(new NotEndToken(WD.V).a(new NotEndToken(WD.C)));
         //C→<float_value>
-        G.add(new NTChar(WD.C).a(new Word(WD.FLOAT_VALUE)));
+        G.add(new NotEndToken(WD.C).a(new Token(WD.FLOAT_VALUE)));
         //C→<int_value>
-        G.add(new NTChar(WD.C).a(new Word(WD.INT_VALUE)));
+        G.add(new NotEndToken(WD.C).a(new Token(WD.INT_VALUE)));
         //C→<string_value>
-        G.add(new NTChar(WD.C).a(new Word(WD.STRING_VALUE)));
+        G.add(new NotEndToken(WD.C).a(new Token(WD.STRING_VALUE)));
         //C→<bool_value>
-        G.add(new NTChar(WD.C).a(new Word(WD.BOOL_VALUE)));
+        G.add(new NotEndToken(WD.C).a(new Token(WD.BOOL_VALUE)));
         //G→+
-        G.add(new NTChar(WD.G).a(new Word(WD.ADD)));
+        G.add(new NotEndToken(WD.G).a(new Token(WD.ADD)));
         //G→-
-        G.add(new NTChar(WD.G).a(new Word(WD.SUBTRACT)));
+        G.add(new NotEndToken(WD.G).a(new Token(WD.SUBTRACT)));
         //G→*
-        G.add(new NTChar(WD.G).a(new Word(WD.MULTIPLY)));
+        G.add(new NotEndToken(WD.G).a(new Token(WD.MULTIPLY)));
         //G→/
-        G.add(new NTChar(WD.G).a(new Word(WD.DIVIDE)));
+        G.add(new NotEndToken(WD.G).a(new Token(WD.DIVIDE)));
         //I→J
-        G.add(new NTChar(WD.I).a(new NTChar(WD.J)));
+        G.add(new NotEndToken(WD.I).a(new NotEndToken(WD.J)));
         //I→K
-        G.add(new NTChar(WD.I).a(new NTChar(WD.K)));
+        G.add(new NotEndToken(WD.I).a(new NotEndToken(WD.K)));
         //J→<if>(P)A
-        G.add(new NTChar(WD.J).a(new Word(WD.IF)).a(new Word(WD.XKH_L)).a(new NTChar(WD.P)).a(new Word(WD.XKH_R)).a(new NTChar(WD.A)));
+        G.add(new NotEndToken(WD.J).a(new Token(WD.IF)).a(new Token(WD.XKH_L)).a(new NotEndToken(WD.P)).a(new Token(WD.XKH_R)).a(new NotEndToken(WD.A)));
         //K→J<else>A
-        G.add(new NTChar(WD.K).a(new NTChar(WD.J)).a(new Word(WD.ELSE)).a(new NTChar(WD.A)));
+        G.add(new NotEndToken(WD.K).a(new NotEndToken(WD.J)).a(new Token(WD.ELSE)).a(new NotEndToken(WD.A)));
         //P→VQV
-        G.add(new NTChar(WD.P).a(new NTChar(WD.V)).a(new NTChar(WD.Q)).a(new NTChar(WD.V)));
+        G.add(new NotEndToken(WD.P).a(new NotEndToken(WD.V)).a(new NotEndToken(WD.Q)).a(new NotEndToken(WD.V)));
         //Q→>
-        G.add(new NTChar(WD.Q).a(new Word(WD.GREATER_EQUAL)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.GREATER_EQUAL)));
         //Q→<
-        G.add(new NTChar(WD.Q).a(new Word(WD.LESS_EQUAL)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.LESS_EQUAL)));
         //Q→>=
-        G.add(new NTChar(WD.Q).a(new Word(WD.GREATER)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.GREATER)));
         //Q→<=
-        G.add(new NTChar(WD.Q).a(new Word(WD.LESS)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.LESS)));
         //Q→==
-        G.add(new NTChar(WD.Q).a(new Word(WD.EQUAL)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.EQUAL)));
         //Q→!=
-        G.add(new NTChar(WD.Q).a(new Word(WD.NOTEQUAL)));
+        G.add(new NotEndToken(WD.Q).a(new Token(WD.NOTEQUAL)));
         //W→<while>(P)A
-        G.add(new NTChar(WD.W).a(new Word(WD.WHILE)).a(new Word(WD.XKH_L)).a(new NTChar(WD.P)).a(new Word(WD.XKH_R)).a(new NTChar(WD.A)));
+        G.add(new NotEndToken(WD.W).a(new Token(WD.WHILE)).a(new Token(WD.XKH_L)).a(new NotEndToken(WD.P)).a(new Token(WD.XKH_R)).a(new NotEndToken(WD.A)));
         //R→<return>V<;>
-        G.add(new NTChar(WD.R).a(new Word(WD.RETURN)).a(new NTChar(WD.V)).a(new Word(WD.SEMICOLON)));
+        G.add(new NotEndToken(WD.R).a(new Token(WD.RETURN)).a(new NotEndToken(WD.V)).a(new Token(WD.SEMICOLON)));
         //动态生成文法符号集
-        for (NTChar i : G) {
+        for (NotEndToken i : G) {
             X.add(i);
             X.addAll(i.getProdRight());
         }

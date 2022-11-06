@@ -8,7 +8,7 @@ public class Main {
         //从resources中获取输入的文件
         URL url = Main.class.getResource("code.txt");
         //初始化词法分析类
-        WordAnalyzer wordAnalyzer = new WordAnalyzer();
+        TokenAnalyzer TokenAnalyzer = new TokenAnalyzer();
         //初始化语法分析类
         Parser parser = new Parser();
         parser.printInfo();
@@ -23,15 +23,15 @@ public class Main {
                 System.out.println(code);
                 System.out.println("--------------------------------------------------------------------------------");
                 //调用词法分析API进行词法分析
-                ArrayList<Word> wordList = wordAnalyzer.analyze(code);
+                ArrayList<Token> TokenList = TokenAnalyzer.analyze(code);
                 System.out.println("词法分析：");
-                for (Word word : wordList) {
-                    System.out.println("<" + word.getMy_type().toString() + "> " + word);
+                for (Token Token : TokenList) {
+                    System.out.println("<" + Token.getMy_type().toString() + "> " + Token);
                 }
                 System.out.println("--------------------------------------------------------------------------------");
                 //SLR(1)语法分析
                 System.out.println("SLR(1)语法分析：");
-                System.out.println(parser.parse(wordList) ? "语法正确" : "语法错误");
+                System.out.println(parser.parse(TokenList) ? "语法正确" : "语法错误");
                 System.out.println("--------------------------------------------------------------------------------");
             }
             inputStream.close();

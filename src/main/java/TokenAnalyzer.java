@@ -3,27 +3,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //词法分析器
-public class WordAnalyzer {
+public class TokenAnalyzer {
     //终结符匹配顺序列表
-    private final ArrayList<Word> words;
+    private final ArrayList<Token> Tokens;
 
     //分析结果
-    private final ArrayList<Word> result = new ArrayList<>();
+    private final ArrayList<Token> result = new ArrayList<>();
 
-    public WordAnalyzer() {
-        words = AnalyzeOrder.getWords();
+    public TokenAnalyzer() {
+        Tokens = AnalyzeOrder.getTokens();
     }
 
     /**
      * 词法分析
      *
      * @param code 源程序
-     * @return java.util.ArrayList<Word>
+     * @return java.util.ArrayList<Token>
      */
-    public ArrayList<Word> analyze(String code) throws Exception {
+    public ArrayList<Token> analyze(String code) throws Exception {
         int pos = 0;
         while (pos < code.length()) {
-            for (Word i : words) {
+            for (Token i : Tokens) {
                 Pattern pattern = i.getPattern();
                 //正则匹配
                 Matcher matcher = pattern.matcher(code);
@@ -33,35 +33,35 @@ public class WordAnalyzer {
                 if (matcher.lookingAt()) {
                     //设置新起点
                     pos = matcher.end();
-                    switch (i.getType()) {
+                    switch (i.getMy_type()) {
                         //碰到其他字符，抛出异常
-                        case Types.OTHER:
-                            throw new WordAnalyzeException("非法文法符号：" + matcher.group());
+                        case OTHER:
+                            throw new Exception("非法文法符号：" + matcher.group());
                         //碰到是空白字符或注释，跳过
-                        case Types.SPACE:
-                        case Types.ANNOTATION:
+                        case SPACE:
+                        case ANNOTATION:
                             break;
                         default:
-                            addWordToResult(i, matcher.group());
+                            addTokenToResult(i, matcher.group());
                     }
                     break;
                 }
             }
         }
         //将#加入result中
-        result.add(new Word(WD.END));
+        result.add(new Token(WD.END));
         return result;
     }
 
     /**
      * 将终结符加入result中
      *
-     * @param origWord 匹配用的Word对象
+     * @param origToken 匹配用的Token对象
      * @param value 属性值
      */
-    private void addWordToResult(Word origWord, String value) throws Exception {
-        Word newWord = new Word(origWord.getMy_type());
-        newWord.setValue(value);
-        result.add(newWord);
+    private void addTokenToResult(Token origToken, String value) throws Exception {
+        Token newToken = new Token(origToken.getMy_type());
+        newToken.setValue(value);
+        result.add(newToken);
     }
 }

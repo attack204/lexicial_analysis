@@ -4,20 +4,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 //SLR(1)语法分析器
 public class Parser {
     //产生式
-    private final ArrayList<NTChar> G;
+    private final ArrayList<NotEndToken> G;
 
     //文法符号集
-    private final LinkedHashSet<Char> X;
+    private final LinkedHashSet<AbstractToken> X;
 
     //项目集族
     //C是一个集合，其中集合的元素又是一个集合，value集合描述了DFA中每一个节点的产生式
     private final LinkedHashSet<LinkedHashSet<Item>> C = new LinkedHashSet<>();
 
     //FIRST集
-    private final HashMap<Char, HashSet<Word>> FIRST = new HashMap<>();
+    private final HashMap<AbstractToken, HashSet<Token>> FIRST = new HashMap<>();
 
     //FOLLOW集
-    private final HashMap<NTChar, HashSet<Word>> FOLLOW = new HashMap<>();
+    private final HashMap<NotEndToken, HashSet<Token>> FOLLOW = new HashMap<>();
 
     //SLR(1)分析表
     private final ParseTable table = new ParseTable();
@@ -25,7 +25,7 @@ public class Parser {
     public Parser() { //在构造函数中初始化goto表和action表
         G = Grammar.getG();
         X = Grammar.getX();
-        doMakeTable();
+        GenerateTable();
     }
 
     /**
@@ -45,15 +45,15 @@ public class Parser {
             size = I.size();
             //I中的每个项A→α∙Bβ
             for (Item A : I) {
-                ArrayList<Char> prod = A.getLeftChar().getProdRight(); //枚举每个项的right集合
+                ArrayList<AbstractToken> prod = A.getLeftChar().getProdRight(); //枚举每个项的right集合
                 int pointPos = A.getPointPos();
                 //A不是归约项目
                 if (pointPos < prod.size()) {
-                    Char B = prod.get(pointPos);
+                    AbstractToken B = prod.get(pointPos);
                     //B是非终结符
                     if (!B.isTerminal()) {
                         //G的每个产生式B→γ
-                        for (NTChar p : G) {
+                        for (NotEndToken p : G) {
                             if (B.equals(p)) {
                                 //将B→∙γ加入J中
                                 J.add(new Item(p, 0));
@@ -81,12 +81,12 @@ public class Parser {
      * @param I 项目集
 	 * @param X 文法符号
      */
-    private LinkedHashSet<Item> GOTO(LinkedHashSet<Item> I, Char X) {
+    private LinkedHashSet<Item> FindGoto(LinkedHashSet<Item> I, AbstractToken X) {
         //将J初始化为空集
         LinkedHashSet<Item> J = new LinkedHashSet<>();
         //I中的每个项A→α∙Xβ
         for (Item A : I) {
-            ArrayList<Char> prod = A.getLeftChar().getProdRight();
+            ArrayList<AbstractToken> prod = A.getLeftChar().getProdRight();
             int pointPos = A.getPointPos();
             if (pointPos < prod.size() && prod.get(pointPos).equals(X)) { //找到一个满足条件的A→αX∙β
                 //将项A→αX∙β加入集合J中
@@ -105,7 +105,7 @@ public class Parser {
     private void doMakeC() {
         //C＝{CLOSURE({[S'→·S]})}
         LinkedHashSet<Item> I0 = new LinkedHashSet<>();
-        I0.add(new Item(new NTChar(WD.S_).a(new NTChar(WD.S)), 0));
+        I0.add(new Item(new NotEndToken(WD.S_).a(new NotEndToken(WD.S)), 0));
         C.add(CLOSURE(I0));
         LinkedHashSet<LinkedHashSet<Item>> J = new LinkedHashSet<>();
         int size;
@@ -114,8 +114,8 @@ public class Parser {
             //C中的每个项集I
             for (LinkedHashSet<Item> I : C) {
                 //每个文法符号x
-                for (Char x : X) {
-                    LinkedHashSet<Item> g = GOTO(I, x); //这里要求出goto集合
+                for (AbstractToken x : X) {
+                    LinkedHashSet<Item> g = FindGoto(I, x); //这里要求出goto集合
                     if (!g.isEmpty()) {
                         //将GOTO(I, X)加入C中
                         J.add(g);
@@ -134,11 +134,11 @@ public class Parser {
      * FIRST(X)表示由X开始推导，第一个可能推出的a \in T
      *
      */
-    private void doMakeFIRST() {
-        for (Char x : X) {
-            HashSet<Word> Fx = new HashSet<>();
+    private void GenerateFirst() {
+        for (AbstractToken x : X) {
+            HashSet<Token> Fx = new HashSet<>();
             //如果x是一个终结符，那么FIRST(X)＝{X}
-            if (x.isTerminal()) Fx.add((Word) x);
+            if (x.isTerminal()) Fx.add((Token) x);
             FIRST.put(x, Fx);
         }
         int startSize;
@@ -146,7 +146,7 @@ public class Parser {
         do {
             startSize = endSize.get();
             //G中的每个产生式X→Y1…Yk(k≥1)
-            for (NTChar X : G) {
+            for (NotEndToken X : G) {
                 //将FIRST(Y1)合并到FIRST(X)中
                 FIRST.get(X).addAll(FIRST.get(X.getProdRight().get(0)));
             }
@@ -159,30 +159,30 @@ public class Parser {
      * 求FOLLOW集
      * 由于文法中不存在ε，此处没有考虑存在ε的情况
      */
-    private void doMakeFOLLOW() {
-        for (Char x : X) {
-            if (!x.isTerminal()) FOLLOW.put((NTChar) x, new HashSet<>());
+    private void GenerateFollow() {
+        for (AbstractToken x : X) {
+            if (!x.isTerminal()) FOLLOW.put((NotEndToken) x, new HashSet<>());
         }
         //将#加入FOLLOW(S)中
-        FOLLOW.get(new NTChar(WD.S)).add(new Word(WD.END));
+        FOLLOW.get(new NotEndToken(WD.S)).add(new Token(WD.END));
         int startSize;
         AtomicInteger endSize = new AtomicInteger(1);
         do {
             startSize = endSize.get();
-            for (NTChar A : G) {
-                ArrayList<Char> right = A.getProdRight();
+            for (NotEndToken A : G) {
+                ArrayList<AbstractToken> right = A.getProdRight();
                 for (int i = 0; i < right.size() - 1; i++) {
                     //存在一个产生式A→αBβ
                     if (!right.get(i).isTerminal()) {
                         //将FIRST(β)合并到FOLLOW(B)中
-                        NTChar B = (NTChar) right.get(i);
+                        NotEndToken B = (NotEndToken) right.get(i);
                         FOLLOW.get(B).addAll(FIRST.get(right.get(i + 1)));
                     }
                 }
                 //存在一个产生式A→αB
                 if (!right.get(right.size() - 1).isTerminal()) {
                     //将FOLLOW(A)合并到FOLLOW(B)中
-                    NTChar B = (NTChar) right.get(right.size() - 1);
+                    NotEndToken B = (NotEndToken) right.get(right.size() - 1);
                     FOLLOW.get(B).addAll(FOLLOW.get(A));
                 }
             }
@@ -199,11 +199,11 @@ public class Parser {
      * 3. 构造FOLLOW集
      * 4. 构造GOTO表和ACTION表
      */
-    private void doMakeTable() {
+    private void GenerateTable() {
         //构造G'的规范LR(0)项集族C＝{I0, I1, …, In}
         doMakeC();
-        doMakeFIRST();
-        doMakeFOLLOW();
+        GenerateFirst();
+        GenerateFollow();
         ArrayList<LinkedHashSet<Item>> I = new ArrayList<>(C);
         table.setACTION(new HashMap[I.size()]);
         table.setGOTO(new HashMap[I.size()]);
@@ -212,21 +212,21 @@ public class Parser {
             table.getGOTO()[i] = new HashMap<>();
             LinkedHashSet<Item> Ii = I.get(i);
             for (Item item : Ii) {
-                NTChar A = item.getLeftChar();
+                NotEndToken A = item.getLeftChar();
                 if (item.getPointPos() < A.getProdRight().size()) {
                     //A→α·aβ∈Ii
                     if (A.getProdRight().get(item.getPointPos()).isTerminal()) {
                         //GOTO(Ii, a)＝Ij
-                        Word a = (Word) A.getProdRight().get(item.getPointPos());
-                        int j = I.indexOf(GOTO(Ii, a));
+                        Token a = (Token) A.getProdRight().get(item.getPointPos());
+                        int j = I.indexOf(FindGoto(Ii, a));
                         //ACTION[i, a]＝sj
                         table.getACTION()[i].put(a, new ParseTable.A_i("s", j));
                     }
                     //A→α.Bβ∈Ii
                     else {
                         //GOTO(Ii, B)＝Ij
-                        NTChar B = (NTChar) A.getProdRight().get(item.getPointPos());
-                        int j = I.indexOf(GOTO(Ii, B));
+                        NotEndToken B = (NotEndToken) A.getProdRight().get(item.getPointPos());
+                        int j = I.indexOf(FindGoto(Ii, B));
                         //GOTO[i, B]＝j
                         table.getGOTO()[i].put(B, new ParseTable.G_i(j));
                     }
@@ -237,7 +237,7 @@ public class Parser {
                         //G[j]是产生式A→α
                         if (A.equals(G.get(j)) && A.getProdRight().equals(G.get(j).getProdRight())) {
                             //∀a∈FOLLOW(A)
-                            for (Word a : FOLLOW.get(A)) {
+                            for (Token a : FOLLOW.get(A)) {
                                 //ACTION[ i, a ]＝rj
                                 table.getACTION()[i].put(a, new ParseTable.A_i("r", j));
                             }
@@ -248,7 +248,7 @@ public class Parser {
                 //S'→S·
                 else {
                     //ACTION[i , #]=acc
-                    table.getACTION()[i].put(new Word(WD.END), new ParseTable.A_i("acc", -1));
+                    table.getACTION()[i].put(new Token(WD.END), new ParseTable.A_i("acc", -1));
                 }
             }
         }
@@ -257,16 +257,16 @@ public class Parser {
     /**
      * SLR(1)语法分析
      *
-     * @param wordList 终结符列表
+     * @param TokenList 终结符列表
      * @return boolean
      */
-    public boolean parse(ArrayList<Word> wordList) {
+    public boolean parse(ArrayList<Token> TokenList) {
         Stack<Integer> state = new Stack<>(); //状态栈
-        Stack<Char> charStack = new Stack<>(); //符号栈
+        Stack<AbstractToken> abstractTokenStack = new Stack<>(); //符号栈
         state.push(0);
-        Word a;
-        for (int w = 0; w < wordList.size(); ) { //枚举所有的word
-            a = wordList.get(w);
+        Token a;
+        for (int w = 0; w < TokenList.size(); ) { //枚举所有的Token
+            a = TokenList.get(w);
             //s是栈顶的状态
             int s = state.peek();
             //i＝ACTION[s，a]
@@ -279,25 +279,25 @@ public class Parser {
             else if (i.getL().equals("s")) {
                 //将t压入栈中
                 state.push(i.getR());
-                charStack.push(a);
+                abstractTokenStack.push(a);
                 //a往后移动一个
                 w++;
             }
             //i＝rt，归约操作
             else if (i.getL().equals("r")) {
                 //归约A→β，也就是将栈中的β变为A
-                NTChar A = G.get(i.getR()); //用A这个产生式进行归约
+                NotEndToken A = G.get(i.getR()); //用A这个产生式进行归约
                 //从栈中弹出│β│个符号，
                 for (int j = 0; j < A.getProdRight().size(); j++) {
                     state.pop();
-                    charStack.pop();
+                    abstractTokenStack.pop();
                 }
                 //将GOTO[栈顶，A]压入栈中
-                charStack.push(A);
+                abstractTokenStack.push(A);
                 state.push(table.getGOTO()[state.peek()].get(A).getR());
                 //打印产生式A→β
                 System.out.print(A.getMy_type().toString() + "->");
-                for (Char c : A.getProdRight()) {
+                for (AbstractToken c : A.getProdRight()) {
                     System.out.print(c.getMy_type().toString() + " ");
                 }
                 System.out.println();
@@ -307,8 +307,8 @@ public class Parser {
                 return true;
             }
             //打印文法符号栈
-            for (Char aChar : charStack) {
-                System.out.print(aChar.getMy_type().toString() + " ");
+            for (AbstractToken aAbstractToken : abstractTokenStack) {
+                System.out.print(aAbstractToken.getMy_type().toString() + " ");
             }
             System.out.println();
         }
@@ -320,8 +320,8 @@ public class Parser {
         System.out.println("文法：");
         for (int i = 0; i < G.size(); i++) {
             System.out.print("P" + i + " " + G.get(i).getMy_type().toString() + "->");
-            for (Char aChar : G.get(i).getProdRight()) {
-                System.out.print(aChar.getMy_type().toString()+ " ");
+            for (AbstractToken aAbstractToken : G.get(i).getProdRight()) {
+                System.out.print(aAbstractToken.getMy_type().toString()+ " ");
             }
             System.out.println();
         }
@@ -334,9 +334,9 @@ public class Parser {
             for (Item item : items) {
                 int pos = 0;
                 System.out.print(item.getLeftChar().getMy_type().toString() + "->");
-                for (Char aChar : item.getLeftChar().getProdRight()) {
+                for (AbstractToken aAbstractToken : item.getLeftChar().getProdRight()) {
                     if (pos == item.getPointPos()) System.out.print("·");
-                    System.out.print(aChar.getMy_type().toString() + " ");
+                    System.out.print(aAbstractToken.getMy_type().toString() + " ");
                     pos++;
                 }
                 if (pos == item.getPointPos()) System.out.print("·");

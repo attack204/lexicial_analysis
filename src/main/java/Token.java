@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 //终结符
 @ToString
-public class Word extends Char {
+public class Token extends AbstractToken {
     @Getter
     @ToString.Exclude
     protected Pattern pattern;
@@ -21,10 +21,10 @@ public class Word extends Char {
         return my_type;
     }
 
-    private final ArrayList<Char> prodRight = new ArrayList<>();
+    private final ArrayList<AbstractToken> prodRight = new ArrayList<>();
 
 
-    public Word(WD wd_) {
+    public Token(WD wd_) {
         my_type = wd_;
         type = (wd_ == WD.OTHER_ID ?  WD.OTHER.ordinal() : my_type.ordinal()) - 1;
     }
@@ -41,10 +41,10 @@ public class Word extends Char {
      * 编译正则表达式并赋值给pattern
      * 返回this
      *
-     * @return Word
+     * @return Token
      */
 
-    public Word makePattern(WD wd) {
+    public Token makePattern(WD wd) {
 
         pattern = Pattern.compile(Patterns.find(wd.toString()));
 
