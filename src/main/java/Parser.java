@@ -20,7 +20,7 @@ public class Parser {
     private final HashMap<NotEndToken, HashSet<Token>> FOLLOW = new HashMap<>();
 
     //SLR(1)分析表
-    private final ParseTable table = new ParseTable();
+    private final AnalysisTable table = new AnalysisTable();
 
     public Parser() { //在构造函数中初始化goto表和action表
         G = Grammar.getG();
@@ -51,7 +51,7 @@ public class Parser {
                 if (pointPos < prod.size()) {
                     AbstractToken B = prod.get(pointPos);
                     //B是非终结符
-                    if (!B.isTerminal()) {
+                    if (!B.isEndToken()) {
                         //G的每个产生式B→γ
                         for (NotEndToken p : G) {
                             if (B.equals(p)) {
@@ -138,7 +138,7 @@ public class Parser {
         for (AbstractToken x : X) {
             HashSet<Token> Fx = new HashSet<>();
             //如果x是一个终结符，那么FIRST(X)＝{X}
-            if (x.isTerminal()) Fx.add((Token) x);
+            if (x.isEndToken()) Fx.add((Token) x);
             FIRST.put(x, Fx);
         }
         int startSize;
@@ -161,7 +161,7 @@ public class Parser {
      */
     private void GenerateFollow() {
         for (AbstractToken x : X) {
-            if (!x.isTerminal()) FOLLOW.put((NotEndToken) x, new HashSet<>());
+            if (!x.isEndToken()) FOLLOW.put((NotEndToken) x, new HashSet<>());
         }
         //将#加入FOLLOW(S)中
         FOLLOW.get(new NotEndToken(WD.S)).add(new Token(WD.END));
@@ -173,14 +173,14 @@ public class Parser {
                 ArrayList<AbstractToken> right = A.getProdRight();
                 for (int i = 0; i < right.size() - 1; i++) {
                     //存在一个产生式A→αBβ
-                    if (!right.get(i).isTerminal()) {
+                    if (!right.get(i).isEndToken()) {
                         //将FIRST(β)合并到FOLLOW(B)中
                         NotEndToken B = (NotEndToken) right.get(i);
                         FOLLOW.get(B).addAll(FIRST.get(right.get(i + 1)));
                     }
                 }
                 //存在一个产生式A→αB
-                if (!right.get(right.size() - 1).isTerminal()) {
+                if (!right.get(right.size() - 1).isEndToken()) {
                     //将FOLLOW(A)合并到FOLLOW(B)中
                     NotEndToken B = (NotEndToken) right.get(right.size() - 1);
                     FOLLOW.get(B).addAll(FOLLOW.get(A));
@@ -215,12 +215,12 @@ public class Parser {
                 NotEndToken A = item.getLeftChar();
                 if (item.getPointPos() < A.getProdRight().size()) {
                     //A→α·aβ∈Ii
-                    if (A.getProdRight().get(item.getPointPos()).isTerminal()) {
+                    if (A.getProdRight().get(item.getPointPos()).isEndToken()) {
                         //GOTO(Ii, a)＝Ij
                         Token a = (Token) A.getProdRight().get(item.getPointPos());
                         int j = I.indexOf(FindGoto(Ii, a));
                         //ACTION[i, a]＝sj
-                        table.getACTION()[i].put(a, new ParseTable.A_i("s", j));
+                        table.getACTION()[i].put(a, new AnalysisTable.A_i("s", j));
                     }
                     //A→α.Bβ∈Ii
                     else {
@@ -228,7 +228,7 @@ public class Parser {
                         NotEndToken B = (NotEndToken) A.getProdRight().get(item.getPointPos());
                         int j = I.indexOf(FindGoto(Ii, B));
                         //GOTO[i, B]＝j
-                        table.getGOTO()[i].put(B, new ParseTable.G_i(j));
+                        table.getGOTO()[i].put(B, new AnalysisTable.G_i(j));
                     }
                 }
                 //A→α·∈Ii且A≠S'
@@ -239,7 +239,7 @@ public class Parser {
                             //∀a∈FOLLOW(A)
                             for (Token a : FOLLOW.get(A)) {
                                 //ACTION[ i, a ]＝rj
-                                table.getACTION()[i].put(a, new ParseTable.A_i("r", j));
+                                table.getACTION()[i].put(a, new AnalysisTable.A_i("r", j));
                             }
                             break;
                         }
@@ -248,7 +248,7 @@ public class Parser {
                 //S'→S·
                 else {
                     //ACTION[i , #]=acc
-                    table.getACTION()[i].put(new Token(WD.END), new ParseTable.A_i("acc", -1));
+                    table.getACTION()[i].put(new Token(WD.END), new AnalysisTable.A_i("acc", -1));
                 }
             }
         }
@@ -270,7 +270,7 @@ public class Parser {
             //s是栈顶的状态
             int s = state.peek();
             //i＝ACTION[s，a]
-            ParseTable.A_i i = table.getACTION()[s].get(a); //看一下从s向a的转移
+            AnalysisTable.A_i i = table.getACTION()[s].get(a); //看一下从s向a的转移
             //i不存在，即error
             if (i == null) {
                 break;

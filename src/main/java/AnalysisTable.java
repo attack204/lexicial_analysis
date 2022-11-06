@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 //SLR(1)分析表
 @Data
-public class ParseTable {
+public class AnalysisTable {
     //ACTION表
     private HashMap<Token, A_i>[] ACTION;
 

@@ -1,4 +1,4 @@
-enum WD {
+public enum WD {
     OTHER,
     ID,
     FLOAT_VALUE,

@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-
-//        String property = System.getProperties().getProperty("user.home");
-//        String filePath = property.replace("\\", "/");
         String fileName = "/Users/liugaoji/Desktop/lexical/output.txt";
         try {
             System.setOut(new PrintStream(new FileOutputStream(fileName)));

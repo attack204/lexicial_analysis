@@ -33,8 +33,8 @@ public class Token extends AbstractToken {
     protected Object value;
 
     @Override
-    protected void setIsTerminal() {
-        isTerminal = true;
+    protected void setEndToken() {
+        isEndToken = true;
     }
 
     /**

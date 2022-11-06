@@ -23,8 +23,8 @@ public class NotEndToken extends AbstractToken {
     private WD my_type;
 
     @Override
-    protected void setIsTerminal() {
-        isTerminal = false;
+    protected void setEndToken() {
+        isEndToken = false;
     }
 
     /**
