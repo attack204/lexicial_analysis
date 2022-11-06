@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="byyl1" />
+        <module name="lexical" />
       </profile>
     </annotationProcessing>
   </component>

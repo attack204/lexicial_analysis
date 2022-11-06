@@ -1,7 +1,3 @@
-import parser.Parser;
-import wordanalyzer.WordAnalyzer;
-import wordanalyzer.Word;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
