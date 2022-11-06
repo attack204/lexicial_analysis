@@ -1,10 +1,22 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+
+
+//        String property = System.getProperties().getProperty("user.home");
+//        String filePath = property.replace("\\", "/");
+        String fileName = "/Users/liugaoji/Desktop/lexical/output.txt";
+        try {
+            System.setOut(new PrintStream(new FileOutputStream(fileName)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //从resources中获取输入的文件
         URL url = Main.class.getResource("code.txt");
         //初始化词法分析类
