@@ -18,7 +18,7 @@ public class AnalysisTable {
     @Data
     @AllArgsConstructor
     static class A_i {
-        //e.g. "s"
+        //e.g. "s/r"
         private String l;
 
         //e.g. 1

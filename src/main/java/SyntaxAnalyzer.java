@@ -23,8 +23,8 @@ public class SyntaxAnalyzer {
     private final AnalysisTable table = new AnalysisTable();
 
     public SyntaxAnalyzer() { //在构造函数中初始化goto表和action表
-        G = Grammar.getG();
-        X = Grammar.getX();
+        G = Production.getG();
+        X = Production.getX();
         GenerateTable();
     }
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 //文法
-public class Grammar {
+public class Production {
     //产生式
     @Getter
     private static final ArrayList<NotEndToken> G = new ArrayList<>();
