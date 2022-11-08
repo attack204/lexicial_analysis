@@ -31,12 +31,12 @@ public class LexicalAalyzer {
                 matcher.region(pos, code.length());
                 //lookingAt()会把pos位置的字符作为起点进行匹配
                 if (matcher.lookingAt()) {
-                    //设置新起点
+                    //找到一个匹配
                     pos = matcher.end();
                     switch (i.getMy_type()) {
                         //碰到其他字符，抛出异常
                         case OTHER:
-                            throw new Exception("非法文法符号：" + matcher.group());
+                            throw new Exception("ERROR：" + matcher.group());
                         //碰到是空白字符或注释，跳过
                         case SPACE:
                         case ANNOTATION:
