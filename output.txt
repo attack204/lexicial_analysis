@@ -12,7 +12,7 @@ int main() {  //compilation
     while (b < 10) {
         d = d + 1;
     }
-    return 0;
+    return 0
 }
 
 Lexical Analyse：
@@ -76,7 +76,6 @@ Lexical Analyse：
 <DKH_R> EndToken(type=22, my_type=DKH_R, value="}")
 <RETURN> EndToken(type=15, my_type=RETURN, value="return")
 <INT_VALUE> EndToken(type=2, my_type=INT_VALUE, value="0")
-<SEMICOLON> EndToken(type=23, my_type=SEMICOLON, value=";")
 <DKH_R> EndToken(type=22, my_type=DKH_R, value="}")
 <END> EndToken(type=36, my_type=END, value=null)
 Syntax Analyse：
@@ -300,24 +299,4 @@ L->L Y
 T N X DKH_L L 
 T N X DKH_L L RETURN 
 T N X DKH_L L RETURN INT_VALUE 
-C->INT_VALUE 
-T N X DKH_L L RETURN C 
-V->C 
-T N X DKH_L L RETURN V 
-T N X DKH_L L RETURN V SEMICOLON 
-R->RETURN V SEMICOLON 
-T N X DKH_L L R 
-Y->R 
-T N X DKH_L L Y 
-L->L Y 
-T N X DKH_L L 
-T N X DKH_L L DKH_R 
-A->DKH_L L DKH_R 
-T N X A 
-F->T N X A 
-F 
-O->F 
-O 
-S->O 
-S 
-OK
+Error

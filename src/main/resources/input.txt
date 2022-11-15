@@ -11,5 +11,5 @@ int main() {  //compilation
     while (b < 10) {
         d = d + 1;
     }
-    return 0;
+    return 0
 }
